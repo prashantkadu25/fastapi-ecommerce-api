@@ -11,6 +11,7 @@ from fastapi.security import HTTPBearer
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from auth import verify_token
+
 security = HTTPBearer()
 router = APIRouter()
 
@@ -51,9 +52,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/users")
 def get_users(
     db: Session = Depends(get_db),
-    credentials: HTTPAuthorizationCredentials = Depends(security)
+    user=Depends(verify_token)
 ):
-    verify_token(credentials)
     return db.query(User).all()
 
 
