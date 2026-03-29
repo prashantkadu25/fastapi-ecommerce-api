@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = "secret"
 ALGORITHM = "HS256"
 
-# THIS LINE IS MAGIC (shows Authorize button)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+# IMPORTANT → must match login route
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 def create_token(data: dict):
@@ -20,4 +20,4 @@ def verify_token(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+        raise HTTPException(status_code=401, detail="Invalid token")
